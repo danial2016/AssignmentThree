@@ -3,7 +3,20 @@ package com.example.daniel.assignmentthree;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.IBinder;
+import android.util.Log;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * Created by Daniel on 2017-10-19.
@@ -20,7 +33,64 @@ public class Controller {
         Intent serviceIntent = new Intent(ma, ServiceClass.class);
         boundToService = ma.bindService(serviceIntent, serviceConn, 0);
         ma.startService(serviceIntent);
+        boolean port = checkIfPortAvailable(8080);
+        if(port){
+            new ServerThread().start();
+            new ClientThread().start();
+        }else{
+            Log.i("Port", "NOT AVAILABLE");
+        }
+
+
     }
+
+    private class ServerThread extends Thread{
+        @Override
+        public void run() {
+            Server server = new Server();
+            server.startServer();
+            Log.i("Server status", "started");
+        }
+    }
+
+    private class ClientThread extends Thread{
+
+        public void run() {
+            TestClient client = new TestClient();
+            client.startClient();
+        }
+    }
+
+    private static boolean checkIfPortAvailable(int port) {
+        ServerSocket tcpSocket = null;
+        DatagramSocket udpSocket = null;
+
+        try {
+            tcpSocket = new ServerSocket(port);
+            tcpSocket.setReuseAddress(true);
+
+            udpSocket = new DatagramSocket(port);
+            udpSocket.setReuseAddress(true);
+            return true;
+        } catch (IOException ex) {
+            // denotes the port is in use
+        } finally {
+            if (tcpSocket != null) {
+                try {
+                    tcpSocket.close();
+                } catch (IOException e) {
+					/* not to be thrown */
+                }
+            }
+
+            if (udpSocket != null) {
+                udpSocket.close();
+            }
+        }
+
+        return false;
+    }
+
 
     private class ServiceConn implements ServiceConnection {
         public void onServiceConnected(ComponentName arg0, IBinder binder) {
