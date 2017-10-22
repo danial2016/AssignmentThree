@@ -62,10 +62,8 @@ public class Server {
                 outputLine = "Hello"; //server initiates with "Hello"
                 out.println(outputLine);
                 while((inputLine = in.readLine()) != null){
-                    Log.i("From client", inputLine);
                     String toClient = new ServerProtocol().processInput(inputLine);
-                    out.print(toClient);
-                    Log.i("To client", toClient);
+                    out.println(toClient);
                 }
                 socket.close();
             } catch (IOException e) {

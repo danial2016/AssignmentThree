@@ -38,9 +38,7 @@ public class Client {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             Log.i("From server", in.readLine());
-            if (in.readLine().equals("Hello")){
-                new Receive(in).start();
-            }
+            new Receive(in).start();
         } catch (UnknownHostException e) {
             Log.i("Err", "Don't know about host " + hostName);
             System.exit(1);
@@ -61,8 +59,8 @@ public class Client {
         public void run() {
             String fromServer;
             try{
-                while ((fromServer = in.readLine()) != null) {
-                    Log.i("RECEIVED", fromServer);
+                while (in.readLine() != null) {
+                    Log.i("RECEIVED", in.readLine());
                 }
             }catch (IOException e){
                 e.printStackTrace();
