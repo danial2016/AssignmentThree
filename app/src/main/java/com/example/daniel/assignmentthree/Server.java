@@ -2,6 +2,9 @@ package com.example.daniel.assignmentthree;
 
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,19 +28,17 @@ public class Server {
         //exception is thrown if it can't listen on the specified port
         try {
             serverSocket = new ServerSocket(portNumber);
-            Log.i("serverSocket", "has been created");
+            Log.i("ServerSocket", "has been created");
 
             while (true) {
-                Log.i("Server status", "inside while-loop");
                 // blocks the call until connection is created and Socket object returned; i.e it
                 // loops forever, listening for client connection requests on a ServerSocket
                 // once request comes in the Server accepts the connection and hands it the socket
                 // returned from accept, and starts the thread. Then the server goes back to
                 // listening for other connection requests
                 Socket clientSocket = serverSocket.accept();
-                Log.i("Client status", "has accepted connection");
+                Log.i("Connection status", "server has accepted client connection request");
                 new MultiServerThread(clientSocket).start();
-                Log.i("Created", "MULTISERVERTHREAD");
             }
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "
@@ -50,21 +51,21 @@ public class Server {
         Socket socket = null;
 
         public MultiServerThread(Socket socket){
-            Log.i("Inside MST ", "inside MST-constructor");
             this.socket = socket;
         }
 
         public void run() {
             try {
-                Log.i("Inside MST ", "inside MST");
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String inputLine, outputLine;
-                outputLine = "Hello";
+                outputLine = "Hello"; //server initiates with "Hello"
                 out.println(outputLine);
                 while((inputLine = in.readLine()) != null){
-                    Log.i("Server receives:", inputLine);
-                    out.println("Hello to you");
+                    Log.i("From client", inputLine);
+                    String toClient = new ServerProtocol().processInput(inputLine);
+                    out.print(toClient);
+                    Log.i("To client", toClient);
                 }
                 socket.close();
             } catch (IOException e) {

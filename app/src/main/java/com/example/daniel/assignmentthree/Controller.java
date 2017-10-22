@@ -3,20 +3,12 @@ package com.example.daniel.assignmentthree;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * Created by Daniel on 2017-10-19.
@@ -26,6 +18,7 @@ public class Controller {
     private MainActivity ma;
     private boolean boundToService, bound = false;
     private ServiceClass serviceClass;
+    Client client;
 
     public Controller (MainActivity ma){
         this.ma = ma;
@@ -40,8 +33,10 @@ public class Controller {
         }else{
             Log.i("Port", "NOT AVAILABLE");
         }
+    }
 
-
+    public void seeAllProfiles(){
+        client.sendMessage(new ClientProtocol().getAllProfiles());
     }
 
     private class ServerThread extends Thread{
@@ -56,7 +51,7 @@ public class Controller {
     private class ClientThread extends Thread{
 
         public void run() {
-            TestClient client = new TestClient();
+            client = new Client();
             client.startClient();
         }
     }
@@ -87,7 +82,6 @@ public class Controller {
                 udpSocket.close();
             }
         }
-
         return false;
     }
 
