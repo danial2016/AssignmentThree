@@ -41,7 +41,7 @@ public class CapturePicFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_capture_pic, container, false);
+        View view = inflater.inflate(R.layout.fragment_capture_pic2, container, false);
         btnCapturePic = (Button) view.findViewById(R.id.button);
         ivTaken = (ImageView) view.findViewById(R.id.ivTake);
         this.myDb = new DatabaseHelper(getActivity());

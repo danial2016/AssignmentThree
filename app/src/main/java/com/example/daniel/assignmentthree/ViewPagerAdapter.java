@@ -9,7 +9,7 @@ public class ViewPagerAdapter extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_pager_adapter);
+        setContentView(R.layout.activity_view_pager_adapter2);
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         ToggleBetweenTabs toggleBetweenTabs = new ToggleBetweenTabs(getSupportFragmentManager());
         viewPager.setAdapter(toggleBetweenTabs);
