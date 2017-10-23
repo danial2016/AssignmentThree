@@ -60,7 +60,7 @@ public class Controller {
 
         public void run() {
             client = new Client();
-            client.startClient();
+            client.startClient("10.0.2.15", 8080);
         }
     }
 

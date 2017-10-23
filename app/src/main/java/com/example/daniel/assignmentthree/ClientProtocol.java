@@ -43,4 +43,15 @@ public class ClientProtocol {
         return obj.toString();
     }
 
+    public String uploadImage(String imageTitle){
+        JSONObject obj = new JSONObject();
+        try{
+            obj.put("type", "image");
+            obj.put("title", imageTitle);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+
 }

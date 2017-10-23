@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -23,15 +24,13 @@ import java.net.UnknownHostException;
 
 public class Client {
     private BufferedReader in;
-    PrintWriter out;
+    private PrintWriter out;
 
     public Client(){
 
     }
 
-    public void startClient() {
-        String hostName = "10.0.2.15"; //OMG! It was supposed to be the emulators IP!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        int portNumber = 8080;
+    public void startClient(String hostName, int portNumber) {
         try {
             InetAddress address = InetAddress.getByName(hostName);
             Socket socket = new Socket(address, portNumber);
@@ -60,11 +59,34 @@ public class Client {
             String fromServer;
             try{
                 while (in.readLine() != null) {
-                    Log.i("RECEIVED", in.readLine());
+                    fromServer = in.readLine();
+                    Log.i("RECEIVED", fromServer);
+                    JSONObject obj = new JSONObject(fromServer);
+                    if(obj.get("type").equals("uploadImage")){
+                        int port = Integer.parseInt(obj.get("port").toString());
+                        new ImageServer().startImageServer(port);
+                        new UploadImageToServer(port).start();
+                    }
                 }
             }catch (IOException e){
                 e.printStackTrace();
             }
+            catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class UploadImageToServer extends Thread{
+        int port;
+
+        public UploadImageToServer(int port){
+            this.port = port;
+        }
+
+        @Override
+        public void run() {
+
         }
     }
 
