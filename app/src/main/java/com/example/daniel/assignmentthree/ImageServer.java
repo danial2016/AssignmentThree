@@ -2,29 +2,25 @@ package com.example.daniel.assignmentthree;
 
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
-import java.net.*;
+import java.net.Socket;
 
 /**
- * Created by Daniel on 2017-10-19.
+ * Created by Daniel on 2017-10-23.
  */
 
-public class Server {
-    private int portNumber = 8080;
+public class ImageServer {
     private ServerSocket serverSocket = null;
 
-    public Server(){
+    public ImageServer(){
 
     }
 
-    public void startServer() {
+    public void startImageServer(int portNumber) {
         //exception is thrown if it can't listen on the specified port
         try {
             serverSocket = new ServerSocket(portNumber);
@@ -59,8 +55,6 @@ public class Server {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String inputLine, outputLine;
-                outputLine = "Hello"; //server initiates with "Hello"
-                out.println(outputLine);
                 out.flush();
                 while((inputLine = in.readLine()) != null){
                     String toClient = new ServerProtocol().processInput(inputLine);
@@ -73,6 +67,4 @@ public class Server {
             }
         }
     }
-
-
 }

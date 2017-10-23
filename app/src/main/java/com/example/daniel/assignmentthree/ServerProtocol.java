@@ -31,6 +31,10 @@ public class ServerProtocol {
                 jsonObject.put("type", "userInfo");
                 jsonObject.put("userInfo", "Fake userInfo");
             }
+            if (inputObj.get("type").equals("image")){
+                jsonObject.put("type", "uploadImage");
+                jsonObject.put("port", String.valueOf(new Port().getPort()));
+            }
         }catch (JSONException e){
             e.printStackTrace();
         }
