@@ -16,7 +16,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
@@ -78,6 +82,12 @@ public class CapturePicFragment extends Fragment {
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             File path = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             pictureUri = Uri.fromFile(new File(path, "PHOTOS"));
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(),pictureUri);
+                bitmapToArray(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             Log.d(TAG, "Picture  " + pictureUri.getPath());
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
             startActivityForResult(takePictureIntent, CAMERA_CAPTURE_IMAGE_REQUEST);
@@ -85,9 +95,13 @@ public class CapturePicFragment extends Fragment {
         }
     }
 
-    /* get uri  */
-    public Uri getPictureUri() {
-        return this.pictureUri;
+    /* Bitmap to array  */
+    public byte [] bitmapToArray( Bitmap bitmap ) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
+        byte[] byteArray = stream.toByteArray();
+        Log.d(TAG,"My byte array is ready"+new String(byteArray));
+        return byteArray;
     }
 
     /* När du ska hämta bilder får du omvandla från sträng till Uri

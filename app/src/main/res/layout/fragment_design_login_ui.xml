@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background=""
+    tools:context="com.example.daniel.assignmentthree.DesignLoginUi">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="93dp"
+        android:text="Login"
+        android:layout_marginEnd="17dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/et_pass" />
+
+    <EditText
+        android:id="@+id/et_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button2"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="54dp"
+        android:layout_marginStart="28dp"
+        android:ems="10"
+        android:inputType="textPassword"/>
+
+    <EditText
+        android:id="@+id/et_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/et_pass"
+        android:layout_alignStart="@+id/et_pass"
+        android:layout_marginBottom="110dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Name" />
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/et_pass"
+        android:layout_alignStart="@+id/et_id"
+        android:layout_marginBottom="36dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Surname" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/et_pass"
+        android:layout_alignParentStart="true"
+        app:srcCompat="@android:drawable/ic_lock_lock" />
+</RelativeLayout>
