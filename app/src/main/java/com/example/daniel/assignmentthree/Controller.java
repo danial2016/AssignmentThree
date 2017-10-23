@@ -7,7 +7,11 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 
@@ -15,12 +19,14 @@ import java.net.ServerSocket;
  * Created by Daniel on 2017-10-19.
  */
 
-public class Controller {
+public class Controller implements Serializable{
     private MainActivity ma;
     private boolean boundToService, bound = false;
     private ServiceClass serviceClass;
     Client client;
     Context context;
+    private byte[] imageData;
+    private ClientProtocol clientProtocol;
 
     public Controller (MainActivity ma, Context context){
         this.ma = ma;
@@ -29,6 +35,7 @@ public class Controller {
         Intent serviceIntent = new Intent(ma, ServiceClass.class);
         boundToService = ma.bindService(serviceIntent, serviceConn, 0);
         ma.startService(serviceIntent);
+        clientProtocol = new ClientProtocol();
         boolean port = checkIfPortAvailable(8080);
         if(port){
             new ServerThread().start();
@@ -38,8 +45,31 @@ public class Controller {
         }
     }
 
+    public void decodeJSON(String fromServer){
+        try{
+            JSONObject obj = new JSONObject(fromServer);
+            if(obj.get("type").equals("uploadImage")){
+                int port = Integer.parseInt(obj.get("port").toString());
+                new ImageServer().startImageServer(port);
+                if(imageData != null){
+                    Log.i("Image data", "is complete");
+                    new UploadImageToServer(port,imageData).start();
+                }else{
+                    Log.i("Image data", "is null");
+                }
+            }
+        }catch (JSONException e){
+
+        }
+    }
+
     public void seeAllProfiles(){
-        client.sendMessage(new ClientProtocol().getAllProfiles());
+        client.sendMessage(clientProtocol.getAllProfiles());
+    }
+
+    public void uploadImage(byte[] imageData){
+        client.sendMessage(clientProtocol.uploadImage("myImage"));
+        this.imageData = imageData;
     }
 
     public void login() {
@@ -60,6 +90,7 @@ public class Controller {
 
         public void run() {
             client = new Client();
+            client.setController(Controller.this);
             client.startClient("10.0.2.15", 8080);
         }
     }

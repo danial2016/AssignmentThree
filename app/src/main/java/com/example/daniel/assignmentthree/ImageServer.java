@@ -24,7 +24,7 @@ public class ImageServer {
         //exception is thrown if it can't listen on the specified port
         try {
             serverSocket = new ServerSocket(portNumber);
-            Log.i("ServerSocket", "has been created");
+            Log.i("ServerSocket", " for ImageServer has been created");
 
             while (true) {
                 // blocks the call until connection is created and Socket object returned; i.e it

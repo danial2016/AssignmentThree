@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 
 public class ToggleBetweenTabs extends FragmentPagerAdapter {
+    Controller controller;
 
     final int TABS = 2;
     private String tabTitles[] = new String[] {"MY INCOMES", "MY EXPENSES"};

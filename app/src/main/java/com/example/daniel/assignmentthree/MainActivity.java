@@ -1,13 +1,15 @@
 package com.example.daniel.assignmentthree;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
-    private Controller controller;
+    public static Controller controller;
     private Button button, btnLogin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

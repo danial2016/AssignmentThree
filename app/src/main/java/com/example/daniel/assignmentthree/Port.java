@@ -12,7 +12,9 @@ public class Port {
 
     public Port(){
         rand = new Random();
-        port = 1000 + rand.nextInt(9999);
+        int high = 9999;
+        int low = 1000;
+        port = rand.nextInt(high-low) + low;
     }
 
     public int getPort(){

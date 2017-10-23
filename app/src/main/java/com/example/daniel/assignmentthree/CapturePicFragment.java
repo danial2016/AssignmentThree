@@ -36,6 +36,7 @@ public class CapturePicFragment extends Fragment {
     private int CAMERA_CAPTURE_IMAGE_REQUEST = 100;
     private String TAG = "CapturePicFragment";
     private DatabaseHelper myDb;
+    private Controller controller;
 
     public CapturePicFragment() {
         // Required empty public constructor
@@ -76,18 +77,16 @@ public class CapturePicFragment extends Fragment {
         outState.putParcelable("Uri", pictureUri);
     }
 
+    public void setController(Controller controller){
+        this.controller = controller;
+    }
+
     /* In here the camera is launched, and the user is able to take a picture */
     public void captureImage() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             File path = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             pictureUri = Uri.fromFile(new File(path, "PHOTOS"));
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(),pictureUri);
-                bitmapToArray(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             Log.d(TAG, "Picture  " + pictureUri.getPath());
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
             startActivityForResult(takePictureIntent, CAMERA_CAPTURE_IMAGE_REQUEST);
@@ -120,6 +119,7 @@ public class CapturePicFragment extends Fragment {
         if ((requestCode == CAMERA_CAPTURE_IMAGE_REQUEST) && (resultCode == RESULT_OK)) {
             /* Path holding the pictures  */
             String pathToPicture = pictureUri.getPath();
+            MainActivity.controller.uploadImage(pathToPicture.getBytes());
             /* Getting the Uri in string format */
             String s = pictureUri.toString();
             /* Adding taken pictures to the database  */

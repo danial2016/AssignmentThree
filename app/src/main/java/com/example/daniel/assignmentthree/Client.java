@@ -25,9 +25,14 @@ import java.net.UnknownHostException;
 public class Client {
     private BufferedReader in;
     private PrintWriter out;
+    private Controller controller;
 
     public Client(){
 
+    }
+
+    public void setController(Controller controller){
+        this.controller = controller;
     }
 
     public void startClient(String hostName, int portNumber) {
@@ -61,32 +66,11 @@ public class Client {
                 while (in.readLine() != null) {
                     fromServer = in.readLine();
                     Log.i("RECEIVED", fromServer);
-                    JSONObject obj = new JSONObject(fromServer);
-                    if(obj.get("type").equals("uploadImage")){
-                        int port = Integer.parseInt(obj.get("port").toString());
-                        new ImageServer().startImageServer(port);
-                        new UploadImageToServer(port).start();
-                    }
+                    controller.decodeJSON(fromServer);
                 }
             }catch (IOException e){
                 e.printStackTrace();
             }
-            catch (JSONException e){
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class UploadImageToServer extends Thread{
-        int port;
-
-        public UploadImageToServer(int port){
-            this.port = port;
-        }
-
-        @Override
-        public void run() {
-
         }
     }
 
