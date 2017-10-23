@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.daniel.assignmentthree">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -22,6 +22,7 @@
 
         <service android:name=".ServiceClass" />
 
+        <activity android:name=".ViewPagerAdapter"></activity>
     </application>
 
 </manifest>

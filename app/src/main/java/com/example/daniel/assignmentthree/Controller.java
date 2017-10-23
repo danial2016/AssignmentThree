@@ -1,6 +1,7 @@
 package com.example.daniel.assignmentthree;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
@@ -19,9 +20,11 @@ public class Controller {
     private boolean boundToService, bound = false;
     private ServiceClass serviceClass;
     Client client;
+    Context context;
 
-    public Controller (MainActivity ma){
+    public Controller (MainActivity ma, Context context){
         this.ma = ma;
+        this.context = context;
         ServiceConn serviceConn = new ServiceConn();
         Intent serviceIntent = new Intent(ma, ServiceClass.class);
         boundToService = ma.bindService(serviceIntent, serviceConn, 0);
@@ -37,6 +40,11 @@ public class Controller {
 
     public void seeAllProfiles(){
         client.sendMessage(new ClientProtocol().getAllProfiles());
+    }
+
+    public void login() {
+        Intent intent = new Intent(context,ViewPagerAdapter.class);
+        context.startActivity(intent);
     }
 
     private class ServerThread extends Thread{
