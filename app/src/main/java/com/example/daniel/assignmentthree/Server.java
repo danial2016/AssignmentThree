@@ -17,14 +17,13 @@ import java.net.*;
  */
 
 public class Server {
-    private int portNumber = 8080;
     private ServerSocket serverSocket = null;
 
     public Server(){
 
     }
 
-    public void startServer() {
+    public void startServer(int portNumber) {
         //exception is thrown if it can't listen on the specified port
         try {
             serverSocket = new ServerSocket(portNumber);

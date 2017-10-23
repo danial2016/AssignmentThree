@@ -19,7 +19,7 @@ import java.net.ServerSocket;
  * Created by Daniel on 2017-10-19.
  */
 
-public class Controller implements Serializable{
+public class Controller{
     private MainActivity ma;
     private boolean boundToService, bound = false;
     private ServiceClass serviceClass;
@@ -38,8 +38,8 @@ public class Controller implements Serializable{
         clientProtocol = new ClientProtocol();
         boolean port = checkIfPortAvailable(8080);
         if(port){
-            new ServerThread().start();
-            new ClientThread().start();
+            new ServerThread(8080).start();
+            new ClientThread("10.0.2.15", 8080).start();
         }else{
             Log.i("Port", "NOT AVAILABLE");
         }
@@ -50,7 +50,8 @@ public class Controller implements Serializable{
             JSONObject obj = new JSONObject(fromServer);
             if(obj.get("type").equals("uploadImage")){
                 int port = Integer.parseInt(obj.get("port").toString());
-                new ImageServer().startImageServer(port);
+                new ImageServerThread(port).start();
+                new ClientThread("10.0.2.15", port).start();
                 if(imageData != null){
                     Log.i("Image data", "is complete");
                     new UploadImageToServer(port,imageData).start();
@@ -60,6 +61,52 @@ public class Controller implements Serializable{
             }
         }catch (JSONException e){
 
+        }
+    }
+
+    private class ImageServerThread extends Thread{
+        int portNumber;
+
+        public ImageServerThread(int portNumber){
+            this.portNumber = portNumber;
+        }
+
+        @Override
+        public void run() {
+            ImageServer imageServer = new ImageServer();
+            imageServer.startImageServer(portNumber);
+            Log.i("ImageServer status", "started");
+        }
+    }
+
+    private class ServerThread extends Thread{
+        int port;
+
+        public ServerThread(int port){
+            this.port = port;
+        }
+
+        @Override
+        public void run() {
+            Server server = new Server();
+            server.startServer(port);
+            Log.i("Server status", "started");
+        }
+    }
+
+    private class ClientThread extends Thread{
+        String hostName;
+        int portNumber;
+
+        public ClientThread(String hostName, int portNumber){
+            this.hostName = hostName;
+            this.portNumber = portNumber;
+        }
+
+        public void run() {
+            client = new Client();
+            client.setController(MainActivity.controller);
+            client.startClient(hostName, portNumber);
         }
     }
 
@@ -75,24 +122,6 @@ public class Controller implements Serializable{
     public void login() {
         Intent intent = new Intent(context,ViewPagerAdapter.class);
         context.startActivity(intent);
-    }
-
-    private class ServerThread extends Thread{
-        @Override
-        public void run() {
-            Server server = new Server();
-            server.startServer();
-            Log.i("Server status", "started");
-        }
-    }
-
-    private class ClientThread extends Thread{
-
-        public void run() {
-            client = new Client();
-            client.setController(Controller.this);
-            client.startClient("10.0.2.15", 8080);
-        }
     }
 
     private static boolean checkIfPortAvailable(int port) {
@@ -130,9 +159,11 @@ public class Controller implements Serializable{
             ServiceClass.LocalBinder ls = (ServiceClass.LocalBinder) binder;
             serviceClass = ls.getService();
             bound = true;
+            Log.i("Service", "is bound");
         }
 
         public void onServiceDisconnected(ComponentName arg0) {
+            Log.i("Service", "is NOT bound");
             bound = false;
         }
     }

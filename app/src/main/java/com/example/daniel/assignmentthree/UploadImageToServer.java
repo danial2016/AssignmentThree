@@ -17,6 +17,6 @@ public class UploadImageToServer extends Thread{
 
     @Override
     public void run() {
-        Log.i("Image", "has been sent to ImageServer");
+        Log.i("Image", "is being constructed and sent to ImageServer!!!!!!!!!");
     }
 }

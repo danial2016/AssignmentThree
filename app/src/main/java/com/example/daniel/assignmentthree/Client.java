@@ -90,6 +90,7 @@ public class Client {
             try{
                 if(out != null){
                     out.println(msg);
+                    out.flush();
                     Log.i("SENT", msg);
                 }else{
                     Log.i("PrintWriter", "is null");

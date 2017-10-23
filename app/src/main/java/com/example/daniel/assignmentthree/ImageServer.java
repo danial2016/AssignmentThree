@@ -24,7 +24,7 @@ public class ImageServer {
         //exception is thrown if it can't listen on the specified port
         try {
             serverSocket = new ServerSocket(portNumber);
-            Log.i("ServerSocket", " for ImageServer has been created");
+            Log.i("ServerSocket", "socket for ImageServer has been created");
 
             while (true) {
                 // blocks the call until connection is created and Socket object returned; i.e it
@@ -33,7 +33,7 @@ public class ImageServer {
                 // returned from accept, and starts the thread. Then the server goes back to
                 // listening for other connection requests
                 Socket clientSocket = serverSocket.accept();
-                Log.i("Connection status", "server has accepted client connection request");
+                Log.i("Connection status", "ImageServer has accepted connection request");
                 new MultiServerThread(clientSocket).start();
             }
         } catch (IOException e) {
