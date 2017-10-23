@@ -85,6 +85,11 @@ public class CapturePicFragment extends Fragment {
         }
     }
 
+    /* get uri  */
+    public Uri getPictureUri() {
+        return this.pictureUri;
+    }
+
     /* När du ska hämta bilder får du omvandla från sträng till Uri
      * Så här:
      *             s = strängen du hämtar från databasen med getString och columnIndex

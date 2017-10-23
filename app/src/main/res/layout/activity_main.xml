@@ -28,4 +28,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="122dp" />
 
+    <Button
+        android:id="@+id/btnLoginPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnLogin"
+        android:layout_marginBottom="33dp"
+        android:layout_marginEnd="26dp"
+        android:layout_toStartOf="@+id/btnLogin"
+        android:text="Fill in info" />
+
 </RelativeLayout>
