@@ -2,6 +2,7 @@ package com.example.daniel.assignmentthree;
 
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -102,6 +103,18 @@ public class CapturePicFragment extends Fragment {
         Log.d(TAG,"My byte array is ready"+new String(byteArray));
         return byteArray;
     }
+
+    public Bitmap retrieveImage() {
+        Cursor cursor= myDb.getImageFromMyDb();
+        if( cursor.getCount() == 0) {
+            Toast.makeText(getActivity(), "No pictures to retrieve", Toast.LENGTH_SHORT).show();
+        }
+        while( cursor.moveToNext()) {
+            String storage = cursor.getString(cursor.getColumnIndex(DatabaseHelper.IMAGE_COL));
+            pictureUri = Uri.parse( storage);
+        }
+        return getScaled(pictureUri.getPath(),100,100);
+     }
 
     /* När du ska hämta bilder får du omvandla från sträng till Uri
      * Så här:

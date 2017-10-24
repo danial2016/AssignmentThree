@@ -14,7 +14,7 @@ import android.widget.ImageView;
 
 public class GalleryFragment extends Fragment {
     // Keep all Images in array
-   CapturePicFragment capture;
+    CapturePicFragment capture;
     GridView gridView;
     ImageView imageview;
     public GalleryFragment() {
@@ -25,7 +25,7 @@ public class GalleryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-      View view = inflater.inflate(R.layout.fragment_gallery2, container, false);
+        View view = inflater.inflate(R.layout.fragment_gallery2, container, false);
         this.capture = new CapturePicFragment();
         gridView = (GridView) view.findViewById(R.id.grid_view);
 
@@ -34,8 +34,6 @@ public class GalleryFragment extends Fragment {
         imageview = (ImageView) view.findViewById(R.id.imageviewer);
         listener();
         return view;
-
-
     }
 
     private void listener() {
