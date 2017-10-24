@@ -57,7 +57,12 @@ public class CapturePicFragment extends Fragment {
         btnCapturePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                captureImage();
+                new Runnable(){
+                    @Override
+                    public void run() {
+                        captureImage();
+                    }
+                };
             }
         });
         return view;

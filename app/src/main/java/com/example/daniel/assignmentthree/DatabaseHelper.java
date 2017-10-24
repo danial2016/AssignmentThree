@@ -19,7 +19,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "imageManager";
     private static final int DATABASE_VERSION = 1;
     private static final String ID_IMAGES = "_id_images";
-
     private static final String TABLE_IMAGES = "images";
     public static final String IMAGE_COL = "image";
 

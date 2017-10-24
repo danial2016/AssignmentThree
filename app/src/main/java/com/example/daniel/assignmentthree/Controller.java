@@ -21,12 +21,13 @@ import java.net.ServerSocket;
 
 public class Controller{
     private MainActivity ma;
-    private boolean boundToService, bound = false;
-    private ServiceClass serviceClass;
+    private boolean boundToService = false;
+    private boolean bound = false;
     Client client;
     Context context;
     private byte[] imageData;
     private ClientProtocol clientProtocol;
+    ServiceClass serviceClass;
 
     public Controller (MainActivity ma, Context context){
         this.ma = ma;
@@ -62,6 +63,30 @@ public class Controller{
         }catch (JSONException e){
 
         }
+    }
+
+    private class ServiceConn implements ServiceConnection {
+        public void onServiceConnected(ComponentName arg0, IBinder binder) {
+            ServiceClass.LocalBinder ls = (ServiceClass.LocalBinder) binder;
+            serviceClass = ls.getService();
+            bound = true;
+            if(serviceClass != null){
+                Log.i("ServiceClass", "is valid and NOT null");
+            }else{
+                Log.i("ServiceClass", "is null");
+            }
+            setServiceInstance(serviceClass);
+            Log.i("Service", "is bound");
+        }
+
+        public void onServiceDisconnected(ComponentName arg0) {
+            Log.i("Service", "is NOT bound");
+            bound = false;
+        }
+    }
+
+    public void setServiceInstance(ServiceClass serviceInstance) {
+        serviceClass = serviceInstance;
     }
 
     private class ImageServerThread extends Thread{
@@ -153,7 +178,7 @@ public class Controller{
         return false;
     }
 
-
+    /*
     private class ServiceConn implements ServiceConnection {
         public void onServiceConnected(ComponentName arg0, IBinder binder) {
             ServiceClass.LocalBinder ls = (ServiceClass.LocalBinder) binder;
@@ -167,5 +192,6 @@ public class Controller{
             bound = false;
         }
     }
+    */
 
 }

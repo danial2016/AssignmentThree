@@ -19,21 +19,6 @@ public class ServiceClass extends Service {
         return new LocalBinder();
     }
 
-    /*
-    public void startServer(int port) {
-        new ServerThread(port).start();
-    }
-
-    public void startImageServer(int port) {
-        new ImageServerThread(port).start();
-    }
-
-    public void connectToServer(Client client, String hostName, int portNumber) {
-        new ClientThread(client, hostName, portNumber).start();
-    }
-    */
-
-
     public class LocalBinder extends Binder {
         //client receives the Binder and can use it to directly access public
         // methods available in either the Binder implementation or the Service.
@@ -48,5 +33,18 @@ public class ServiceClass extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    /*
+    public void startServer(int port) {
+        new ServerThread(port).start();
+    }
+
+    public void startImageServer(int port) {
+        new ImageServerThread(port).start();
+    }
+
+    public void connectToServer(Client client, String hostName, int portNumber) {
+        new ClientThread(client, hostName, portNumber).start();
+    }
+    */
 
 }
