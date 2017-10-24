@@ -14,7 +14,6 @@ public class ToggleBetweenTabs extends FragmentPagerAdapter {
     Controller controller;
 
     final int TABS = 2;
-    private String tabTitles[] = new String[] {"MY INCOMES", "MY EXPENSES"};
 
     public ToggleBetweenTabs(FragmentManager fm) {
         super(fm);
@@ -34,12 +33,21 @@ public class ToggleBetweenTabs extends FragmentPagerAdapter {
     }
 
     @Override
+    public CharSequence getPageTitle(int position) {
+        switch( position) {
+            case 0:
+                return "Gallery";
+            case 1:
+                return "Capture image";
+            case 2:
+                return "Profiles";
+        }
+        return super.getPageTitle(position);
+    }
+
+    @Override
     public int getCount() {
         return TABS;
     }
 
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return tabTitles[position];
-    }
 }

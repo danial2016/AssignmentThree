@@ -38,10 +38,11 @@
         android:id="@+id/imageviewer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="11dp"
-        android:layout_marginEnd="34dp"
         app:srcCompat="@mipmap/ferrari"
-        android:contentDescription="@string/image" />
+        android:contentDescription="@string/image"
+        android:layout_marginEnd="125dp"
+        android:layout_above="@+id/grid_view"
+        android:layout_alignEnd="@+id/textView" />
 
 
 </RelativeLayout>
