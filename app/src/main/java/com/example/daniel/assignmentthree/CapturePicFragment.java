@@ -36,7 +36,7 @@ public class CapturePicFragment extends Fragment {
     private Uri pictureUri;
     private int CAMERA_CAPTURE_IMAGE_REQUEST = 100;
     private String TAG = "CapturePicFragment";
-    private DatabaseHelper myDb;
+    private DataBase_Helper myDb;
     private Controller controller;
 
     public CapturePicFragment() {
@@ -50,7 +50,7 @@ public class CapturePicFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_capture_pic2, container, false);
         btnCapturePic = (Button) view.findViewById(R.id.button);
         ivTaken = (ImageView) view.findViewById(R.id.ivTake);
-        this.myDb = new DatabaseHelper(getActivity());
+        this.myDb = new DataBase_Helper(getActivity());
         if (savedInstanceState != null) {
             pictureUri = savedInstanceState.getParcelable("Uri");
         }
@@ -115,7 +115,7 @@ public class CapturePicFragment extends Fragment {
             Toast.makeText(getActivity(), "No pictures to retrieve", Toast.LENGTH_SHORT).show();
         }
         while( cursor.moveToNext()) {
-            String storage = cursor.getString(cursor.getColumnIndex(DatabaseHelper.IMAGE_COL));
+            String storage = cursor.getString(cursor.getColumnIndex(DataBase_Helper.IMAGE_COL));
             pictureUri = Uri.parse( storage);
         }
         return getScaled(pictureUri.getPath(),100,100);

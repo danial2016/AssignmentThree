@@ -12,7 +12,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     public static Controller controller;
-    private Button button, btnLogin, btnConnect;
+    private Button button, btnLogin, btnConnect, temp;
     boolean boundToService = false;
     boolean bound = false;
     ServiceClass serviceClass;
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.button);
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnConnect = (Button) findViewById(R.id.btnConnect);
+        temp = (Button)findViewById(R.id.btnLoginPage);
     }
 
     public void registerButtonListener(){
@@ -50,6 +51,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 controller.login();
+            }
+        });
+        temp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,TestLoginActivity.class);
+                startActivity(intent);
             }
         });
     }

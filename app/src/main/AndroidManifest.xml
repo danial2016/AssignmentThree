@@ -26,6 +26,7 @@
         <service android:name=".ServiceClass" />
 
         <activity android:name=".ViewPagerAdapter" />
+        <activity android:name=".TestLoginActivity" />
     </application>
 
 </manifest>

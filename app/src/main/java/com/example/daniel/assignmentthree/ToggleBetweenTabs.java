@@ -12,7 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class ToggleBetweenTabs extends FragmentPagerAdapter {
 
-    final int TABS = 2;
+    final int TABS = 3;
 
     public ToggleBetweenTabs(FragmentManager fm) {
         super(fm);
@@ -28,6 +28,10 @@ public class ToggleBetweenTabs extends FragmentPagerAdapter {
             case 1:
                 CapturePicFragment capturePicFragment = new CapturePicFragment();
                 return capturePicFragment;
+            case 2:
+                CommentFragment commentFragment = new CommentFragment();
+                return commentFragment;
+
         }
         return null;
     }
@@ -39,6 +43,8 @@ public class ToggleBetweenTabs extends FragmentPagerAdapter {
                 return "Gallery";
             case 1:
                 return "Capture image";
+            case 3:
+                return "Profile";
         }
         return super.getPageTitle(position);
     }
@@ -48,4 +54,6 @@ public class ToggleBetweenTabs extends FragmentPagerAdapter {
         return TABS;
     }
 
-}
+    }
+
+
