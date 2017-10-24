@@ -12,7 +12,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     public static Controller controller;
-    private Button button, btnLogin;
+    private Button button, btnLogin, btnConnect;
     boolean boundToService = false;
     boolean bound = false;
     ServiceClass serviceClass;
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     public void initializeComponents(){
         button = (Button) findViewById(R.id.button);
         btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnConnect = (Button) findViewById(R.id.btnConnect);
     }
 
     public void registerButtonListener(){
@@ -39,7 +40,12 @@ public class MainActivity extends AppCompatActivity {
                 controller.seeAllProfiles();
             }
         });
-
+        btnConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                controller.connect();
+            }
+        });
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

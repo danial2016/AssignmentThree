@@ -23,10 +23,10 @@ public class Controller{
     private MainActivity ma;
     private boolean boundToService = false;
     private boolean bound = false;
-    Client client;
+    //Client client;
     Context context;
-    private byte[] imageData;
-    private ClientProtocol clientProtocol;
+    //private byte[] imageData;
+    //private ClientProtocol clientProtocol;
     ServiceClass serviceClass;
 
     public Controller (MainActivity ma, Context context){
@@ -36,11 +36,21 @@ public class Controller{
         Intent serviceIntent = new Intent(ma, ServiceClass.class);
         boundToService = ma.bindService(serviceIntent, serviceConn, 0);
         ma.startService(serviceIntent);
-        clientProtocol = new ClientProtocol();
+        //clientProtocol = new ClientProtocol();
+    }
+
+    public void connect(){
+        if(serviceClass != null){
+            Log.i("ServiceClass", "is valid and NOT null");
+        }else{
+            Log.i("ServiceClass", "is null");
+        }
         boolean port = checkIfPortAvailable(8080);
         if(port){
-            new ServerThread(8080).start();
-            new ClientThread("10.0.2.15", 8080).start();
+            serviceClass.startServer(8080);
+            serviceClass.connectToServer("10.0.2.15", 8080);
+            //new ServerThread(8080).start();
+            //new ClientThread("10.0.2.15", 8080).start();
         }else{
             Log.i("Port", "NOT AVAILABLE");
         }
@@ -51,6 +61,16 @@ public class Controller{
             JSONObject obj = new JSONObject(fromServer);
             if(obj.get("type").equals("uploadImage")){
                 int port = Integer.parseInt(obj.get("port").toString());
+                byte[] imageData = serviceClass.getImageData();
+                serviceClass.startImageServer(port);
+                serviceClass.connectToServer("10.0.2.15", port);
+                if(imageData != null){
+                    Log.i("Image data", "is complete");
+                    new UploadImageToServer(port,imageData).start();
+                }else{
+                    Log.i("Image data", "is null");
+                }
+                /*
                 new ImageServerThread(port).start();
                 new ClientThread("10.0.2.15", port).start();
                 if(imageData != null){
@@ -59,10 +79,22 @@ public class Controller{
                 }else{
                     Log.i("Image data", "is null");
                 }
+                */
             }
         }catch (JSONException e){
 
         }
+    }
+
+    public void seeAllProfiles(){
+        serviceClass.seeAllProfiles();
+        //client.sendMessage(clientProtocol.getAllProfiles());
+    }
+
+    public void uploadImage(byte[] imageData){
+        serviceClass.uploadImage(imageData);
+        //client.sendMessage(clientProtocol.uploadImage("myImage"));
+        //this.imageData = imageData;
     }
 
     private class ServiceConn implements ServiceConnection {
@@ -70,11 +102,6 @@ public class Controller{
             ServiceClass.LocalBinder ls = (ServiceClass.LocalBinder) binder;
             serviceClass = ls.getService();
             bound = true;
-            if(serviceClass != null){
-                Log.i("ServiceClass", "is valid and NOT null");
-            }else{
-                Log.i("ServiceClass", "is null");
-            }
             setServiceInstance(serviceClass);
             Log.i("Service", "is bound");
         }
@@ -85,63 +112,8 @@ public class Controller{
         }
     }
 
-    public void setServiceInstance(ServiceClass serviceInstance) {
+    private void setServiceInstance(ServiceClass serviceInstance) {
         serviceClass = serviceInstance;
-    }
-
-    private class ImageServerThread extends Thread{
-        int portNumber;
-
-        public ImageServerThread(int portNumber){
-            this.portNumber = portNumber;
-        }
-
-        @Override
-        public void run() {
-            ImageServer imageServer = new ImageServer();
-            imageServer.startImageServer(portNumber);
-            Log.i("ImageServer status", "started");
-        }
-    }
-
-    private class ServerThread extends Thread{
-        int port;
-
-        public ServerThread(int port){
-            this.port = port;
-        }
-
-        @Override
-        public void run() {
-            Server server = new Server();
-            server.startServer(port);
-            Log.i("Server status", "started");
-        }
-    }
-
-    private class ClientThread extends Thread{
-        String hostName;
-        int portNumber;
-
-        public ClientThread(String hostName, int portNumber){
-            this.hostName = hostName;
-            this.portNumber = portNumber;
-        }
-
-        public void run() {
-            client = new Client();
-            client.setController(MainActivity.controller);
-            client.startClient(hostName, portNumber);
-        }
-    }
-
-    public void seeAllProfiles(){
-        client.sendMessage(clientProtocol.getAllProfiles());
-    }
-
-    public void uploadImage(byte[] imageData){
-        client.sendMessage(clientProtocol.uploadImage("myImage"));
-        this.imageData = imageData;
     }
 
     public void login() {
