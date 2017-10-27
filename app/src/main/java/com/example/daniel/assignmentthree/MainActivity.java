@@ -20,9 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnLogin, btnSignUp;
     private EditText userName, password;
     private DatabaseUser dbU;
-    private ProfilesTab profilesTab;
-    private GroupsTab groupsTab;
-    private FriendsTab friendsTab;
+    private DatabaseGroups dbG;
 
 
     @Override
@@ -31,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initializeComponents();
         dbU = new DatabaseUser(this);
-        controller = new Controller(dbU, this, this);
+        dbG = new DatabaseGroups(this);
+        controller = new Controller(dbU, dbG, this, this);
         registerButtonListener();
     }
 

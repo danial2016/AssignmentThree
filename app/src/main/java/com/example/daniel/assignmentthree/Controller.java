@@ -36,15 +36,18 @@ public class Controller{
     private Context context;
     private ServiceClass serviceClass;
     private DatabaseUser dbU;
+    private DatabaseGroups dbG;
     private String userName;
     private ListView listView;
     private ArrayList<String> listOfFriends = new ArrayList<String>();
+    private ArrayList<String> listOfGroups = new ArrayList<String>();
 
 
-    public Controller (DatabaseUser dbU, MainActivity ma, Context context){
+    public Controller (DatabaseUser dbU, DatabaseGroups dbG, MainActivity ma, Context context){
         this.ma = ma;
         this.context = context;
         this.dbU = dbU;
+        this.dbG = dbG;
         ServiceConn serviceConn = new ServiceConn();
         Intent serviceIntent = new Intent(ma, ServiceClass.class);
         boundToService = ma.bindService(serviceIntent, serviceConn, 0);
@@ -59,7 +62,7 @@ public class Controller{
         }
         boolean port = checkIfPortAvailable(portNumber);
         if(port){
-            serviceClass.startServer(dbU,portNumber);
+            serviceClass.startServer(dbG, dbU,portNumber);
             serviceClass.connectToServer(userName, hostName, portNumber);
         }else{
             Log.i("Com", "NOT AVAILABLE");
@@ -82,10 +85,36 @@ public class Controller{
             if(obj.get("type").equals("friend")){
                 addFriendToList(obj.get("userName").toString());
             }
+            if(obj.get("type").equals("groups")){
+                JSONArray groupsArray = obj.getJSONArray("groups");
+                String[] listOfGroups = new String[groupsArray.length()];
+                if(listOfGroups.length > 0){
+                    expandListOfGroups(listOfGroups);
+                }else{
+                    Log.i("Groups", "No groups available");
+                }
+            }
+            if(obj.get("type").equals("createdGroup")){
+                Log.i("Message", "Group has been created");
+            }
         }catch (JSONException e){
             e.printStackTrace();
             Log.i("ERROR", "JSONException thrown");
         }
+    }
+
+    private void expandListOfGroups(String[] groups) {
+        for (int i = 0; i < groups.length; i++) {
+            listOfGroups.add(groups[i]);
+        }
+    }
+
+    public ArrayList<String> getListOfGroups(){
+        return listOfGroups;
+    }
+
+    public String getUserName(){
+        return userName;
     }
 
     private void addFriendToList(String userName) {
@@ -99,6 +128,11 @@ public class Controller{
     public void seeAllProfiles(){
         serviceClass.seeAllProfiles();
     }
+
+    public void seeAllGroups() {
+        serviceClass.seeAllGroups();
+    }
+
 
     /*
     Checks if the user already is registered. If false is returned then the user does not exist
@@ -130,24 +164,21 @@ public class Controller{
         serviceClass.affirmDisconnect(userName);
     }
 
-    public void setListView(ListView listView) {
-        this.listView = listView;
+    public void createGroup(String userName, String groupName) {
+        serviceClass.createGroup(userName, groupName);
+
     }
 
-    public ListView getListView(){
-        return listView;
+    public void updateUI(Context applicationContext) {
+        ArrayList<String> tempList = getListOfGroups();
+        String[] listofGroups = new String[tempList.size()];
+        for(int i = 0; i < tempList.size(); i++){
+            listofGroups[i] = tempList.get(i);
+        }
+        Intent intent = new Intent(applicationContext, GroupsActivity.class);
+        intent.putExtra("listOfGroups", listofGroups);
+        applicationContext.startActivity(intent);
     }
-
-    /*
-    public void uploadImage(String pathToPicture){
-        serviceClass.uploadImage(pathToPicture);
-    }
-
-    public void setImageView(Bitmap map, String pathToPicture) {
-        ImageView img = (ImageView) ma.findViewById(R.id.imageView2);
-        img.setImageBitmap(map);
-    }
-    */
 
     private class ServiceConn implements ServiceConnection {
         public void onServiceConnected(ComponentName arg0, IBinder binder) {
@@ -175,12 +206,16 @@ public class Controller{
     public void login(String userName) {
         this.userName = userName;
         serviceClass.setDatabaseUser(dbU);
+        serviceClass.setDatabaseGroups(dbG);
         connect("10.2.2.41", 8080, userName, dbU);
         Intent intent = new Intent(context,NavigationBarActivity.class);
         context.startActivity(intent);
         serviceClass.affirmUserConnectionToServer(userName);
+        serviceClass.affirmUserConnectionToServer(userName);
         seeAllProfiles();
         seeAllProfiles();
+        seeAllGroups();
+        seeAllGroups();
     }
 
     private static boolean checkIfPortAvailable(int port) {

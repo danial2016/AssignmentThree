@@ -65,4 +65,25 @@ public class ClientProtocol {
         return obj.toString();
     }
 
+    public String getAllGroups() {
+        JSONObject obj = new JSONObject();
+        try{
+            obj.put("type", "groups");
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+
+    public String createGroup(String userName, String groupName) {
+        JSONObject obj = new JSONObject();
+        try{
+            obj.put("type", "createGroup");
+            obj.put("groupName", groupName);
+            obj.put("userName", userName);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
 }

@@ -16,6 +16,7 @@ public class ServiceClass extends Service {
     Client client;
     private ClientProtocol clientProtocol;
     private DatabaseUser dbU;
+    private DatabaseGroups dbG;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -38,6 +39,14 @@ public class ServiceClass extends Service {
         client.sendMessage(clientProtocol.affirmDisconnectionFromServer(userName));
     }
 
+    public void seeAllGroups() {
+        client.sendMessage(clientProtocol.getAllGroups());
+    }
+
+    public void createGroup(String userName, String groupName) {
+        client.sendMessage(clientProtocol.createGroup(userName, groupName));
+    }
+
     public class LocalBinder extends Binder {
         //client receives the Binder and can use it to directly access public
         // methods available in either the Binder implementation or the Service.
@@ -57,8 +66,13 @@ public class ServiceClass extends Service {
         this.dbU = dbU;
     }
 
-    public void startServer(DatabaseUser dbU, int port) {
-        new ServerThread(dbU, port).start();
+    public void setDatabaseGroups(DatabaseGroups dbG){
+        this.dbG = dbG;
+    }
+
+
+    public void startServer(DatabaseGroups dbG, DatabaseUser dbU, int port) {
+        new ServerThread(dbG, dbU, port).start();
     }
 
     public void connectToServer(String userName, String hostName, int portNumber) {
@@ -68,15 +82,17 @@ public class ServiceClass extends Service {
     private class ServerThread extends Thread{
         int port;
         DatabaseUser dbU;
+        DatabaseGroups dbG;
 
-        public ServerThread(DatabaseUser dbU, int port){
+        public ServerThread(DatabaseGroups dbG, DatabaseUser dbU, int port){
             this.dbU = dbU;
+            this.dbG = dbG;
             this.port = port;
         }
 
         @Override
         public void run() {
-            Server server = new Server(dbU);
+            Server server = new Server(dbG, dbU);
             server.startServer(port);
             Log.i("Server status", "started");
         }

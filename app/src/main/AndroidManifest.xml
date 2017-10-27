@@ -28,7 +28,8 @@
         <service android:name=".ServiceClass" />
 
         <activity android:name=".NavigationBarActivity" />
-        <activity android:name=".FriendsActivity"></activity>
+        <activity android:name=".FriendsActivity" />
+        <activity android:name=".GroupsActivity"></activity>
     </application>
 
 </manifest>

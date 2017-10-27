@@ -75,9 +75,14 @@ public class NavigationBarActivity extends AppCompatActivity {
                              startActivity(intent);
                          }
                          if (id == R.id.itemGroups) {
-                             Toast.makeText(getApplicationContext(), "Groups", Toast.LENGTH_SHORT).show();
-                             //Intent intent = new Intent(getApplicationContext(), Groups.class);
-                             //startService(intent);
+                             ArrayList<String> tempList = MainActivity.controller.getListOfGroups();
+                             String[] listofGroups = new String[tempList.size()];
+                             for(int i = 0; i < tempList.size(); i++){
+                                 listofGroups[i] = tempList.get(i);
+                             }
+                             Intent intent = new Intent(getApplicationContext(), GroupsActivity.class);
+                             intent.putExtra("listOfGroups", listofGroups);
+                             startActivity(intent);
                          }
                          return true;
                      }
