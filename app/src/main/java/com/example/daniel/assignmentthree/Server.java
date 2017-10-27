@@ -18,9 +18,10 @@ import java.net.*;
 
 public class Server {
     private ServerSocket serverSocket = null;
+    private DatabaseUser dbU;
 
-    public Server(){
-
+    public Server(DatabaseUser dbU){
+        this.dbU = dbU;
     }
 
     public void startServer(int portNumber) {
@@ -37,7 +38,7 @@ public class Server {
                 // listening for other connection requests
                 Socket clientSocket = serverSocket.accept();
                 Log.i("Connection status", "server has accepted client connection request");
-                new MultiServerThread(clientSocket).start();
+                new MultiServerThread(dbU, clientSocket).start();
             }
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "
@@ -48,8 +49,10 @@ public class Server {
 
     private class MultiServerThread extends Thread{
         Socket socket = null;
+        DatabaseUser dbU;
 
-        public MultiServerThread(Socket socket){
+        public MultiServerThread(DatabaseUser dbU, Socket socket){
+            this.dbU = dbU;
             this.socket = socket;
         }
 
@@ -62,7 +65,7 @@ public class Server {
                 out.println(outputLine);
                 out.flush();
                 while((inputLine = in.readLine()) != null){
-                    String toClient = new ServerProtocol().processInput(inputLine);
+                    String toClient = new ServerProtocol(dbU).processInput(inputLine);
                     out.println(toClient);
                     out.flush();
                 }

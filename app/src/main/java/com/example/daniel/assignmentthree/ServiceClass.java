@@ -14,16 +14,28 @@ import android.widget.Toast;
 
 public class ServiceClass extends Service {
     Client client;
-    private byte[] imageData;
     private ClientProtocol clientProtocol;
+    private DatabaseUser dbU;
 
     @Override
     public IBinder onBind(Intent intent) {
         return new LocalBinder();
     }
 
-    public byte[] getImageData() {
-        return imageData;
+    public void sendRequest(String userName) {
+        client.sendMessage(clientProtocol.sendUserRequest(userName));
+    }
+
+    public void seeAllProfiles(){
+        client.sendMessage(clientProtocol.getAllProfiles());
+    }
+
+    public void affirmUserConnectionToServer(String userName) {
+        client.sendMessage(clientProtocol.affirmUserConnectionToServer(userName));
+    }
+
+    public void affirmDisconnect(String userName) {
+        client.sendMessage(clientProtocol.affirmDisconnectionFromServer(userName));
     }
 
     public class LocalBinder extends Binder {
@@ -41,45 +53,30 @@ public class ServiceClass extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-
-    public void startServer(int port) {
-        new ServerThread(port).start();
+    public void setDatabaseUser(DatabaseUser dbU){
+        this.dbU = dbU;
     }
 
-    public void startImageServer(int port) {
-        new ImageServerThread(port).start();
+    public void startServer(DatabaseUser dbU, int port) {
+        new ServerThread(dbU, port).start();
     }
 
-    public void connectToServer(String hostName, int portNumber) {
-        new ClientThread(hostName, portNumber).start();
-    }
-
-
-    private class ImageServerThread extends Thread{
-        int portNumber;
-
-        public ImageServerThread(int portNumber){
-            this.portNumber = portNumber;
-        }
-
-        @Override
-        public void run() {
-            ImageServer imageServer = new ImageServer();
-            imageServer.startImageServer(portNumber);
-            Log.i("ImageServer status", "started");
-        }
+    public void connectToServer(String userName, String hostName, int portNumber) {
+        new ClientThread(userName, hostName, portNumber).start();
     }
 
     private class ServerThread extends Thread{
         int port;
+        DatabaseUser dbU;
 
-        public ServerThread(int port){
+        public ServerThread(DatabaseUser dbU, int port){
+            this.dbU = dbU;
             this.port = port;
         }
 
         @Override
         public void run() {
-            Server server = new Server();
+            Server server = new Server(dbU);
             server.startServer(port);
             Log.i("Server status", "started");
         }
@@ -88,26 +85,31 @@ public class ServiceClass extends Service {
     private class ClientThread extends Thread{
         String hostName;
         int portNumber;
+        String userName;
 
-        public ClientThread(String hostName, int portNumber){
+        public ClientThread(String userName, String hostName, int portNumber){
             this.hostName = hostName;
             this.portNumber = portNumber;
+            this.userName = userName;
         }
 
         public void run() {
-            client = new Client();
+            client = new Client(userName);
             client.setController(MainActivity.controller);
             client.startClient(hostName, portNumber);
         }
     }
 
-    public void seeAllProfiles(){
-        client.sendMessage(clientProtocol.getAllProfiles());
+    /*
+    public void uploadImage(String pathToPicture){
+        client.sendMessage(clientProtocol.uploadImage("myImage"));
+        this.pathToPicture = pathToPicture;
     }
 
-    public void uploadImage(byte[] imageData){
-        client.sendMessage(clientProtocol.uploadImage("myImage"));
-        this.imageData = imageData;
+
+    public String getPathToPicture(){
+        return pathToPicture;
     }
+    */
 
 }

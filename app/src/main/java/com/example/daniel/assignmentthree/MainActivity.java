@@ -1,5 +1,8 @@
 package com.example.daniel.assignmentthree;
 
+import android.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.app.FragmentManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -9,13 +12,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     public static Controller controller;
-    private Button button, btnLogin, btnConnect;
-    boolean boundToService = false;
-    boolean bound = false;
-    ServiceClass serviceClass;
+    private Button btnLogin, btnSignUp;
+    private EditText userName, password;
+    private DatabaseUser dbU;
+    private ProfilesTab profilesTab;
+    private GroupsTab groupsTab;
+    private FriendsTab friendsTab;
 
 
     @Override
@@ -23,35 +30,48 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initializeComponents();
-        controller = new Controller(this, this);
+        dbU = new DatabaseUser(this);
+        controller = new Controller(dbU, this, this);
         registerButtonListener();
     }
 
     public void initializeComponents(){
-        button = (Button) findViewById(R.id.button);
+        userName = (EditText) findViewById(R.id.userName);
+        password = (EditText) findViewById(R.id.password);
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnConnect = (Button) findViewById(R.id.btnConnect);
+        btnSignUp = (Button) findViewById(R.id.btnSignUp);
     }
 
     public void registerButtonListener(){
-        button.setOnClickListener(new View.OnClickListener() {
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                controller.seeAllProfiles();
-            }
-        });
-        btnConnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                controller.connect();
+                String name = userName.getText().toString();
+                String pass = password.getText().toString();
+                if(controller.userAlreadyExists(name, pass) == false){
+                    User user = new User(name, pass);
+                    controller.signUp(user);
+                }else{
+                    Toast.makeText(getApplicationContext(), "User already exists", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                controller.login();
+                String name = userName.getText().toString();
+                String pass = password.getText().toString();
+                if(controller.userAlreadyExists(name, pass) == true){
+                    controller.login(name);
+                    Toast.makeText(getApplicationContext(), "Welcome " + name, Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(), "You don't exist!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
+    public void toast(String toastMsg) {
+        Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
+    }
 }

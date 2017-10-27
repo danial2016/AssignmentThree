@@ -20,7 +20,7 @@ public class ClientProtocol {
         return obj.toString();
     }
 
-    public String followProfileRequest(String userName){
+    public String sendUserRequest(String userName){
         JSONObject obj = new JSONObject();
         try{
             obj.put("type", "request");
@@ -31,23 +31,34 @@ public class ClientProtocol {
         return obj.toString();
     }
 
-    public String userInfo(String userName, String password){
+    public String affirmUserConnectionToServer(String userName){
         JSONObject obj = new JSONObject();
         try{
-            obj.put("type", "userInfo");
+            obj.put("type", "affirm");
             obj.put("userName", userName);
-            obj.put("password", password);
         }catch (JSONException e){
             e.printStackTrace();
         }
         return obj.toString();
     }
 
-    public String uploadImage(String imageTitle){
+    public String chatMessage(String userName, String textMessage){
         JSONObject obj = new JSONObject();
         try{
-            obj.put("type", "image");
-            obj.put("title", imageTitle);
+            obj.put("type", "chatMessage");
+            obj.put("userName", userName);
+            obj.put("textMessage", textMessage);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+
+    public String affirmDisconnectionFromServer(String userName){
+        JSONObject obj = new JSONObject();
+        try{
+            obj.put("type", "disconnect");
+            obj.put("userName", userName);
         }catch (JSONException e){
             e.printStackTrace();
         }

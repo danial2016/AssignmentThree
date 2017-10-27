@@ -5,4 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="image">Image</string>
     <string name="my_gallery">My gallery...</string>
+    <string name="Open">Chat room app</string>
+    <string name="Close">Chat room app</string>
 </resources>

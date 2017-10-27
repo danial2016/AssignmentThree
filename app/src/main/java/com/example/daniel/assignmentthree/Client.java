@@ -26,9 +26,11 @@ public class Client {
     private BufferedReader in;
     private PrintWriter out;
     private Controller controller;
+    private Socket socket;
+    private String userName;
 
-    public Client(){
-
+    public Client(String userName){
+        this.userName = userName;
     }
 
     public void setController(Controller controller){
@@ -38,7 +40,7 @@ public class Client {
     public void startClient(String hostName, int portNumber) {
         try {
             InetAddress address = InetAddress.getByName(hostName);
-            Socket socket = new Socket(address, portNumber);
+            socket = new Socket(address, portNumber);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             Log.i("From server", in.readLine());
@@ -68,6 +70,9 @@ public class Client {
                     Log.i("RECEIVED", fromServer);
                     controller.decodeJSON(fromServer);
                 }
+                //once there is nothing to receive
+                //socket.close();
+                //controller.affirmDisconnect(userName);
             }catch (IOException e){
                 e.printStackTrace();
             }
@@ -90,8 +95,8 @@ public class Client {
             try{
                 if(out != null){
                     out.println(msg);
-                    out.flush();
                     Log.i("SENT", msg);
+                    out.flush();
                 }else{
                     Log.i("PrintWriter", "is null");
                 }
